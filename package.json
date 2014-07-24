@@ -1,0 +1,9 @@
+{
+  "name": "TextSecure-Browser",
+  "devDependencies": {
+    "mocha-phantomjs": "latest"
+  },
+  "scripts": {
+      "test": "mocha-phantomjs test.html"
+  }
+}

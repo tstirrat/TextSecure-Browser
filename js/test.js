@@ -140,9 +140,9 @@ describe("Curve25519", function() {
         // this is a just cute little trick to get a nice-looking note about
         // which curve25519 impl we're using.
         if (window.textsecure.nacl.USE_NACL) {
-            it("is NACL", function(done) { done(); });
+            it("is NACL");
         } else {
-            it("is JavaScript", function(done) { done(); });
+            it("is JavaScript");
         }
     });
 
