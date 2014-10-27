@@ -14,16 +14,22 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-Whisper.Layout = new (Backbone.View.extend({
+Whisper.Layout = new(Backbone.View.extend({
     initialize: function() {
         this.gutter = $('#gutter');
         this.contacts = $('#contacts');
         this.resize();
 
-        new Whisper.ConversationListView({el: $('#contacts')});
+        new Whisper.ConversationListView({
+            el: $('#contacts')
+        });
         window.addEventListener('resize', this.resize.bind(this));
-        window.addEventListener('storage', function(){Whisper.Threads.fetch();});
-        Whisper.Threads.fetch({reset: true});
+        window.addEventListener('storage', function() {
+            Whisper.Threads.fetch();
+        });
+        Whisper.Threads.fetch({
+            reset: true
+        });
     },
     events: {
         'click #new-message': 'new_message',
@@ -42,7 +48,7 @@ Whisper.Layout = new (Backbone.View.extend({
         $('.conversation').trigger('close'); // detach any existing conversation views
         new Whisper.NewGroupView();
     },
-    resize: function (e) {
+    resize: function(e) {
         var windowheight = window.innerHeight;
         var form = $('.send-message-area').outerHeight();
         var gutter_offset = this.gutter.offset().top;
@@ -60,7 +66,9 @@ Whisper.Layout = new (Backbone.View.extend({
         $(content).insertAfter(this.gutter);
         this.resize();
     }
-}))({el: document});
+}))({
+    el: document
+});
 
 textsecure.registerOnLoadFunction(function() {
     if (textsecure.storage.getUnencrypted("number_id") === undefined) {

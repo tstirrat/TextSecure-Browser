@@ -33,11 +33,14 @@ describe("Cryptographic primitives", function() {
         it('works', function(done) {
             var key = hexToArrayBuffer('603deb1015ca71be2b73aef0857d77811f352c073b6108d72d9810a30914dff4');
             var iv = hexToArrayBuffer('000102030405060708090a0b0c0d0e0f');
-            var plaintext  = hexToArrayBuffer('6bc1bee22e409f96e93d7e117393172aae2d8a571e03ac9c9eb76fac45af8e5130c81c46a35ce411e5fbc1191a0a52eff69f2445df4f9b17ad2b417be66c3710');
+            var plaintext = hexToArrayBuffer('6bc1bee22e409f96e93d7e117393172aae2d8a571e03ac9c9eb76fac45af8e5130c81c46a35ce411e5fbc1191a0a52eff69f2445df4f9b17ad2b417be66c3710');
             var ciphertext = hexToArrayBuffer('f58c4c04d6e5f1ba779eabfb5f7bfbd69cfc4e967edb808d679f777bc6702c7d39f23369a9d9bacfa530e26304231461b2eb05e2c39be9fcda6c19078c6a9d1b3f461796d6b0d6b2e0c2a72b4d80e644');
-            return window.textsecure.subtle.encrypt({name: "AES-CBC", iv: iv}, key, plaintext).then(function(result) {
+            return window.textsecure.subtle.encrypt({
+                name: "AES-CBC",
+                iv: iv
+            }, key, plaintext).then(function(result) {
                 assert.strictEqual(getString(result), getString(ciphertext));
-			}).then(done).catch(done);
+            }).then(done).catch(done);
         });
     });
 
@@ -45,11 +48,14 @@ describe("Cryptographic primitives", function() {
         it('works', function(done) {
             var key = hexToArrayBuffer('603deb1015ca71be2b73aef0857d77811f352c073b6108d72d9810a30914dff4');
             var iv = hexToArrayBuffer('000102030405060708090a0b0c0d0e0f');
-            var plaintext  = hexToArrayBuffer('6bc1bee22e409f96e93d7e117393172aae2d8a571e03ac9c9eb76fac45af8e5130c81c46a35ce411e5fbc1191a0a52eff69f2445df4f9b17ad2b417be66c3710');
+            var plaintext = hexToArrayBuffer('6bc1bee22e409f96e93d7e117393172aae2d8a571e03ac9c9eb76fac45af8e5130c81c46a35ce411e5fbc1191a0a52eff69f2445df4f9b17ad2b417be66c3710');
             var ciphertext = hexToArrayBuffer('f58c4c04d6e5f1ba779eabfb5f7bfbd69cfc4e967edb808d679f777bc6702c7d39f23369a9d9bacfa530e26304231461b2eb05e2c39be9fcda6c19078c6a9d1b3f461796d6b0d6b2e0c2a72b4d80e644');
-            return window.textsecure.subtle.decrypt({name: "AES-CBC", iv: iv}, key, ciphertext).then(function(result) {
+            return window.textsecure.subtle.decrypt({
+                name: "AES-CBC",
+                iv: iv
+            }, key, ciphertext).then(function(result) {
                 assert.strictEqual(getString(result), getString(plaintext));
-			}).then(done).catch(done);
+            }).then(done).catch(done);
         });
     });
 
@@ -58,9 +64,12 @@ describe("Cryptographic primitives", function() {
             var key = hexToArrayBuffer('6f35628d65813435534b5d67fbdb54cb33403d04e843103e6399f806cb5df95febbdd61236f33245');
             var input = hexToArrayBuffer('752cff52e4b90768558e5369e75d97c69643509a5e5904e0a386cbe4d0970ef73f918f675945a9aefe26daea27587e8dc909dd56fd0468805f834039b345f855cfe19c44b55af241fff3ffcd8045cd5c288e6c4e284c3720570b58e4d47b8feeedc52fd1401f698a209fccfa3b4c0d9a797b046a2759f82a54c41ccd7b5f592b');
             var mac = getString(hexToArrayBuffer('05d1243e6465ed9620c9aec1c351a186'));
-            return window.textsecure.subtle.sign({name: "HMAC", hash: "SHA-256"}, key, input).then(function(result) {
+            return window.textsecure.subtle.sign({
+                name: "HMAC",
+                hash: "SHA-256"
+            }, key, input).then(function(result) {
                 assert.strictEqual(getString(result).substring(0, mac.length), mac);
-			}).then(done).catch(done);
+            }).then(done).catch(done);
         });
     });
 
@@ -79,12 +88,12 @@ describe("Cryptographic primitives", function() {
             for (var i = 0; i < 10; i++)
                 info[i] = 240 + i;
 
-            return textsecure.crypto.testing_only.HKDF(IKM.buffer, salt.buffer, info.buffer).then(function(OKM){
+            return textsecure.crypto.testing_only.HKDF(IKM.buffer, salt.buffer, info.buffer).then(function(OKM) {
                 var T1 = hexToArrayBuffer("3cb25f25faacd57a90434f64d0362f2a2d2d0a90cf1a5a4c5db02d56ecc4c5bf");
                 var T2 = hexToArrayBuffer("34007208d5b887185865");
                 assert.equal(getString(OKM[0]), getString(T1));
                 assert.equal(getString(OKM[1]).substring(0, 10), getString(T2));
-			}).then(done).catch(done);
+            }).then(done).catch(done);
         });
     });
 });
@@ -92,7 +101,7 @@ describe("Cryptographic primitives", function() {
 describe('Unencrypted PushMessageProto "decrypt"', function() {
     //exclusive
     it('works', function(done) {
-		localStorage.clear();
+        localStorage.clear();
         var PushMessageProto = dcodeIO.ProtoBuf.loadProtoFile(
             "protos/IncomingPushMessageSignal.proto"
         ).build("textsecure.PushMessageContent");
@@ -110,11 +119,11 @@ describe('Unencrypted PushMessageProto "decrypt"', function() {
         };
 
         return textsecure.crypto.handleIncomingPushMessageProto(server_message).
-            then(function(message) {
-                assert.equal(message.body, text_message.body);
-                assert.equal(message.attachments.length, text_message.attachments.length);
-                assert.equal(text_message.attachments.length, 0);
-			}).then(done).catch(done);
+        then(function(message) {
+            assert.equal(message.body, text_message.body);
+            assert.equal(message.attachments.length, text_message.attachments.length);
+            assert.equal(text_message.attachments.length, 0);
+        }).then(done).catch(done);
     });
 });
 
@@ -123,9 +132,13 @@ describe("Curve25519", function() {
         // this is a just cute little trick to get a nice-looking note about
         // which curve25519 impl we're using.
         if (window.textsecure.nacl.USE_NACL) {
-            it("is NACL", function(done) { done(); });
+            it("is NACL", function(done) {
+                done();
+            });
         } else {
-            it("is JavaScript", function(done) { done(); });
+            it("is JavaScript", function(done) {
+                done();
+            });
         }
     });
 
@@ -134,9 +147,9 @@ describe("Curve25519", function() {
             return textsecure.registerOnLoadFunction(function() {
                 // These are just some random curve25519 test vectors I found online (with a version byte prepended to pubkeys)
                 var alice_priv = hexToArrayBuffer("77076d0a7318a57d3c16c17251b26645df4c2f87ebc0992ab177fba51db92c2a");
-                var alice_pub  = hexToArrayBuffer("058520f0098930a754748b7ddcb43ef75a0dbf3a0d26381af4eba4a98eaa9b4e6a");
-                var bob_priv   = hexToArrayBuffer("5dab087e624a8a4b79e17f8b83800ee66f3bb1292618b6fd1c2f8b27ff88e0eb");
-                var bob_pub    = hexToArrayBuffer("05de9edb7d7b7dc1b4d35b61c2ece435373f8343c85b78674dadfc7e146f882b4f");
+                var alice_pub = hexToArrayBuffer("058520f0098930a754748b7ddcb43ef75a0dbf3a0d26381af4eba4a98eaa9b4e6a");
+                var bob_priv = hexToArrayBuffer("5dab087e624a8a4b79e17f8b83800ee66f3bb1292618b6fd1c2f8b27ff88e0eb");
+                var bob_pub = hexToArrayBuffer("05de9edb7d7b7dc1b4d35b61c2ece435373f8343c85b78674dadfc7e146f882b4f");
                 var shared_sec = hexToArrayBuffer("4a5d9d5ba4ce2de1728e3bf480350f25e07e21c947d19e3376f09b3c1e161742");
 
                 return textsecure.crypto.testing_only.privToPub(alice_priv, true).then(function(aliceKeyPair) {
@@ -164,7 +177,7 @@ describe("Curve25519", function() {
                         });
                     });
                 });
-			}).then(done).catch(done);
+            }).then(done).catch(done);
         });
     });
 
@@ -173,10 +186,10 @@ describe("Curve25519", function() {
             return textsecure.registerOnLoadFunction(function() {
                 // Some self-generated test vectors
                 var priv = hexToArrayBuffer("48a8892cc4e49124b7b57d94fa15becfce071830d6449004685e387c62409973");
-                var pub  = hexToArrayBuffer("0555f1bfede27b6a03e0dd389478ffb01462e5c52dbbac32cf870f00af1ed9af3a");
-                var msg  = hexToArrayBuffer("617364666173646661736466");
-                var sig  = hexToArrayBuffer("2bc06c745acb8bae10fbc607ee306084d0c28e2b3bb819133392473431291fd0"+
-                                        "dfa9c7f11479996cf520730d2901267387e08d85bbf2af941590e3035a545285");
+                var pub = hexToArrayBuffer("0555f1bfede27b6a03e0dd389478ffb01462e5c52dbbac32cf870f00af1ed9af3a");
+                var msg = hexToArrayBuffer("617364666173646661736466");
+                var sig = hexToArrayBuffer("2bc06c745acb8bae10fbc607ee306084d0c28e2b3bb819133392473431291fd0" +
+                    "dfa9c7f11479996cf520730d2901267387e08d85bbf2af941590e3035a545285");
 
                 return textsecure.crypto.testing_only.privToPub(priv, false).then(function(pubCalc) {
                     //if (getString(pub) != getString(pubCalc))
@@ -188,16 +201,20 @@ describe("Curve25519", function() {
                         return textsecure.crypto.testing_only.Ed25519Verify(pub, msg, sig);
                     });
                 });
-			}).then(done).catch(done);
+            }).then(done).catch(done);
         });
     });
 
     describe("Identity and Pre Key Creation", function() {
         this.timeout(10000);
-        before(function() { localStorage.clear(); });
-        after(function()  { localStorage.clear(); });
-        it ('works', function(done) {
-			localStorage.clear();
+        before(function() {
+            localStorage.clear();
+        });
+        after(function() {
+            localStorage.clear();
+        });
+        it('works', function(done) {
+            localStorage.clear();
             return textsecure.registerOnLoadFunction(function() {
                 return textsecure.crypto.generateKeys().then(function() {
                     assert.isDefined(textsecure.storage.getEncrypted("25519KeyidentityKey"));
@@ -231,7 +248,7 @@ describe("Curve25519", function() {
                         });
                     });
                 });
-			}).then(done).catch(done);
+            }).then(done).catch(done);
         });
     });
 });
@@ -260,7 +277,8 @@ describe("Axolotl", function() {
             else {
                 var privKey = privKeyQueue.shift();
                 return textsecure.crypto.testing_only.privToPub(privKey, false).then(function(keyPair) {
-                    var a = btoa(getString(keyPair.privKey)); var b = btoa(getString(privKey));
+                    var a = btoa(getString(keyPair.privKey));
+                    var b = btoa(getString(privKey));
                     if (getString(keyPair.privKey) != getString(privKey))
                         throw new Error('Failed to rederive private key!');
                     else
@@ -273,98 +291,98 @@ describe("Axolotl", function() {
         var doStep = function() {
             var data = v[step][1];
 
-            switch(v[step++][0]) {
-            case "receiveMessage":
-                var postLocalKeySetup = function() {
-                    if (data.newEphemeralKey !== undefined)
-                        privKeyQueue.push(data.newEphemeralKey);
+            switch (v[step++][0]) {
+                case "receiveMessage":
+                    var postLocalKeySetup = function() {
+                        if (data.newEphemeralKey !== undefined)
+                            privKeyQueue.push(data.newEphemeralKey);
 
-                    var message = new textsecure.protobuf.IncomingPushMessageSignal();
-                    message.type = data.type;
-                    message.source = "SNOWDEN";
-                    message.message = data.message;
-                    message.sourceDevice = 1;
-                    try {
-                        var proto = textsecure.protobuf.IncomingPushMessageSignal.decode(message.encode());
-                        return textsecure.crypto.handleIncomingPushMessageProto(proto).then(function(res) {
-                            if (data.expectTerminateSession)
-                                return res.flags == textsecure.protobuf.PushMessageContent.Flags.END_SESSION;
-                            return res.body == data.expectedSmsText;
-                        }).catch(function(e) {
+                        var message = new textsecure.protobuf.IncomingPushMessageSignal();
+                        message.type = data.type;
+                        message.source = "SNOWDEN";
+                        message.message = data.message;
+                        message.sourceDevice = 1;
+                        try {
+                            var proto = textsecure.protobuf.IncomingPushMessageSignal.decode(message.encode());
+                            return textsecure.crypto.handleIncomingPushMessageProto(proto).then(function(res) {
+                                if (data.expectTerminateSession)
+                                    return res.flags == textsecure.protobuf.PushMessageContent.Flags.END_SESSION;
+                                return res.body == data.expectedSmsText;
+                            }).catch(function(e) {
+                                if (data.expectException)
+                                    return true;
+                                throw e;
+                            });
+                        } catch (e) {
                             if (data.expectException)
-                                return true;
+                                return Promise.resolve(true);
                             throw e;
-                        });
-                    } catch(e) {
-                        if (data.expectException)
-                            return Promise.resolve(true);
-                        throw e;
-                    }
-                }
-
-                if (data.ourIdentityKey !== undefined)
-                    return textsecure.crypto.testing_only.privToPub(data.ourIdentityKey, true).then(function(keyPair) {
-                        textsecure.storage.putEncrypted("25519KeyidentityKey", keyPair);
-                        return textsecure.crypto.testing_only.privToPub(data.ourSignedPreKey, false).then(function(keyPair) {
-                            textsecure.storage.putEncrypted("25519KeysignedKey" + data.signedPreKeyId, keyPair);
-
-                            if (data.ourPreKey !== undefined)
-                                return textsecure.crypto.testing_only.privToPub(data.ourPreKey, false).then(function(keyPair) {
-                                    textsecure.storage.putEncrypted("25519KeypreKey" + data.preKeyId, keyPair);
-                                    return postLocalKeySetup();
-                                });
-                            else
-                                return postLocalKeySetup();
-                        });
-                    });
-                else
-                    return postLocalKeySetup();
-
-            case "sendMessage":
-                var postLocalKeySetup = function() {
-                    if (data.registrationId !== undefined)
-                        textsecure.storage.putUnencrypted("registrationId", data.registrationId);
-
-                    if (data.getKeys !== undefined)
-                        getKeysForNumberMap["SNOWDEN"] = data.getKeys;
-
-                    var checkMessage = function() {
-                        var msg = messagesSentMap["SNOWDEN.1"];
-                        delete messagesSentMap["SNOWDEN.1"];
-                        //XXX: This should be all we do: isEqual(data.expectedCiphertext, msg.body, false);
-                        if (msg.type == 1) {
-                            var expected = getString(data.expectedCiphertext);
-                            var decoded = textsecure.protobuf.WhisperMessage.decode(expected.substring(1, expected.length - 8), 'binary');
-                            var result = getString(msg.body);
-                            return getString(decoded.encode()) == result.substring(1, result.length - 8);
-                        } else {
-                            var decoded = textsecure.protobuf.PreKeyWhisperMessage.decode(getString(data.expectedCiphertext).substr(1), 'binary');
-                            var result = getString(msg.body).substring(1);
-                            return getString(decoded.encode()) == result;
                         }
                     }
 
-                    if (data.endSession)
-                        return textsecure.messaging.closeSession("SNOWDEN").then(checkMessage);
+                    if (data.ourIdentityKey !== undefined)
+                        return textsecure.crypto.testing_only.privToPub(data.ourIdentityKey, true).then(function(keyPair) {
+                            textsecure.storage.putEncrypted("25519KeyidentityKey", keyPair);
+                            return textsecure.crypto.testing_only.privToPub(data.ourSignedPreKey, false).then(function(keyPair) {
+                                textsecure.storage.putEncrypted("25519KeysignedKey" + data.signedPreKeyId, keyPair);
+
+                                if (data.ourPreKey !== undefined)
+                                    return textsecure.crypto.testing_only.privToPub(data.ourPreKey, false).then(function(keyPair) {
+                                        textsecure.storage.putEncrypted("25519KeypreKey" + data.preKeyId, keyPair);
+                                        return postLocalKeySetup();
+                                    });
+                                else
+                                    return postLocalKeySetup();
+                            });
+                        });
                     else
-                        return textsecure.messaging.sendMessageToNumber("SNOWDEN", data.smsText, []).then(checkMessage);
-                }
-
-                if (data.ourBaseKey !== undefined)
-                    privKeyQueue.push(data.ourBaseKey);
-                if (data.ourEphemeralKey !== undefined)
-                    privKeyQueue.push(data.ourEphemeralKey);
-
-                if (data.ourIdentityKey !== undefined)
-                    return textsecure.crypto.testing_only.privToPub(data.ourIdentityKey, true).then(function(keyPair) {
-                        textsecure.storage.putEncrypted("25519KeyidentityKey", keyPair);
                         return postLocalKeySetup();
-                    });
-                else
-                    return postLocalKeySetup();
 
-            default:
-                return Promise.resolve(false);
+                case "sendMessage":
+                    var postLocalKeySetup = function() {
+                        if (data.registrationId !== undefined)
+                            textsecure.storage.putUnencrypted("registrationId", data.registrationId);
+
+                        if (data.getKeys !== undefined)
+                            getKeysForNumberMap["SNOWDEN"] = data.getKeys;
+
+                        var checkMessage = function() {
+                            var msg = messagesSentMap["SNOWDEN.1"];
+                            delete messagesSentMap["SNOWDEN.1"];
+                            //XXX: This should be all we do: isEqual(data.expectedCiphertext, msg.body, false);
+                            if (msg.type == 1) {
+                                var expected = getString(data.expectedCiphertext);
+                                var decoded = textsecure.protobuf.WhisperMessage.decode(expected.substring(1, expected.length - 8), 'binary');
+                                var result = getString(msg.body);
+                                return getString(decoded.encode()) == result.substring(1, result.length - 8);
+                            } else {
+                                var decoded = textsecure.protobuf.PreKeyWhisperMessage.decode(getString(data.expectedCiphertext).substr(1), 'binary');
+                                var result = getString(msg.body).substring(1);
+                                return getString(decoded.encode()) == result;
+                            }
+                        }
+
+                        if (data.endSession)
+                            return textsecure.messaging.closeSession("SNOWDEN").then(checkMessage);
+                        else
+                            return textsecure.messaging.sendMessageToNumber("SNOWDEN", data.smsText, []).then(checkMessage);
+                    }
+
+                    if (data.ourBaseKey !== undefined)
+                        privKeyQueue.push(data.ourBaseKey);
+                    if (data.ourEphemeralKey !== undefined)
+                        privKeyQueue.push(data.ourEphemeralKey);
+
+                    if (data.ourIdentityKey !== undefined)
+                        return textsecure.crypto.testing_only.privToPub(data.ourIdentityKey, true).then(function(keyPair) {
+                            textsecure.storage.putEncrypted("25519KeyidentityKey", keyPair);
+                            return postLocalKeySetup();
+                        });
+                    else
+                        return postLocalKeySetup();
+
+                default:
+                    return Promise.resolve(false);
             }
         }
         return doStep().then(stepDone);
@@ -373,18 +391,18 @@ describe("Axolotl", function() {
     describe("test vectors", function() {
         _.each(axolotlTestVectors, function(t, i) {
             it(t.name, function(done) {
-				localStorage.clear();
-            	return textsecure.registerOnLoadFunction(function() {
-					return runAxolotlTest(t.vectors).then(function(res) {
-						assert(res);
-					});
-				}).then(done).catch(done);
+                localStorage.clear();
+                return textsecure.registerOnLoadFunction(function() {
+                    return runAxolotlTest(t.vectors).then(function(res) {
+                        assert(res);
+                    });
+                }).then(done).catch(done);
             });
         });
     });
 });
 
 if (window.mochaPhantomJS)
-	mochaPhantomJS.run();
+    mochaPhantomJS.run();
 else
-	mocha.run();
+    mocha.run();

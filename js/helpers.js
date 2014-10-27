@@ -14,77 +14,68 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-function b64ToUint6 (nChr) {
+function b64ToUint6(nChr) {
 
-  return nChr > 64 && nChr < 91 ?
-      nChr - 65
-    : nChr > 96 && nChr < 123 ?
-      nChr - 71
-    : nChr > 47 && nChr < 58 ?
-      nChr + 4
-    : nChr === 43 ?
-      62
-    : nChr === 47 ?
-      63
-    :
-      0;
+    return nChr > 64 && nChr < 91 ?
+        nChr - 65 : nChr > 96 && nChr < 123 ?
+        nChr - 71 : nChr > 47 && nChr < 58 ?
+        nChr + 4 : nChr === 43 ?
+        62 : nChr === 47 ?
+        63 :
+        0;
 
 }
 
-function base64DecToArr (sBase64, nBlocksSize) {
-  var
-    sB64Enc = sBase64.replace(/[^A-Za-z0-9\+\/]/g, ""), nInLen = sB64Enc.length,
-    nOutLen = nBlocksSize ? Math.ceil((nInLen * 3 + 1 >> 2) / nBlocksSize) * nBlocksSize : nInLen * 3 + 1 >> 2;
-var aBBytes = new ArrayBuffer(nOutLen);
-var taBytes = new Uint8Array(aBBytes);
+function base64DecToArr(sBase64, nBlocksSize) {
+    var
+        sB64Enc = sBase64.replace(/[^A-Za-z0-9\+\/]/g, ""),
+        nInLen = sB64Enc.length,
+        nOutLen = nBlocksSize ? Math.ceil((nInLen * 3 + 1 >> 2) / nBlocksSize) * nBlocksSize : nInLen * 3 + 1 >> 2;
+    var aBBytes = new ArrayBuffer(nOutLen);
+    var taBytes = new Uint8Array(aBBytes);
 
-  for (var nMod3, nMod4, nUint24 = 0, nOutIdx = 0, nInIdx = 0; nInIdx < nInLen; nInIdx++) {
-    nMod4 = nInIdx & 3;
-    nUint24 |= b64ToUint6(sB64Enc.charCodeAt(nInIdx)) << 18 - 6 * nMod4;
-    if (nMod4 === 3 || nInLen - nInIdx === 1) {
-      for (nMod3 = 0; nMod3 < 3 && nOutIdx < nOutLen; nMod3++, nOutIdx++) {
-        taBytes[nOutIdx] = nUint24 >>> (16 >>> nMod3 & 24) & 255;
-      }
-      nUint24 = 0;
+    for (var nMod3, nMod4, nUint24 = 0, nOutIdx = 0, nInIdx = 0; nInIdx < nInLen; nInIdx++) {
+        nMod4 = nInIdx & 3;
+        nUint24 |= b64ToUint6(sB64Enc.charCodeAt(nInIdx)) << 18 - 6 * nMod4;
+        if (nMod4 === 3 || nInLen - nInIdx === 1) {
+            for (nMod3 = 0; nMod3 < 3 && nOutIdx < nOutLen; nMod3++, nOutIdx++) {
+                taBytes[nOutIdx] = nUint24 >>> (16 >>> nMod3 & 24) & 255;
+            }
+            nUint24 = 0;
+        }
     }
-  }
-  return aBBytes;
+    return aBBytes;
 }
 
 /* Base64 string to array encoding */
 
-function uint6ToB64 (nUint6) {
+function uint6ToB64(nUint6) {
 
-  return nUint6 < 26 ?
-      nUint6 + 65
-    : nUint6 < 52 ?
-      nUint6 + 71
-    : nUint6 < 62 ?
-      nUint6 - 4
-    : nUint6 === 62 ?
-      43
-    : nUint6 === 63 ?
-      47
-    :
-      65;
+    return nUint6 < 26 ?
+        nUint6 + 65 : nUint6 < 52 ?
+        nUint6 + 71 : nUint6 < 62 ?
+        nUint6 - 4 : nUint6 === 62 ?
+        43 : nUint6 === 63 ?
+        47 :
+        65;
 
 }
 
-function base64EncArr (aBytes) {
+function base64EncArr(aBytes) {
 
-  var nMod3, sB64Enc = "";
+    var nMod3, sB64Enc = "";
 
-  for (var nLen = aBytes.length, nUint24 = 0, nIdx = 0; nIdx < nLen; nIdx++) {
-    nMod3 = nIdx % 3;
-    //if (nIdx > 0 && (nIdx * 4 / 3) % 76 === 0) { sB64Enc += "\r\n"; }
-    nUint24 |= aBytes[nIdx] << (16 >>> nMod3 & 24);
-    if (nMod3 === 2 || aBytes.length - nIdx === 1) {
-      sB64Enc += String.fromCharCode(uint6ToB64(nUint24 >>> 18 & 63), uint6ToB64(nUint24 >>> 12 & 63), uint6ToB64(nUint24 >>> 6 & 63), uint6ToB64(nUint24 & 63));
-      nUint24 = 0;
+    for (var nLen = aBytes.length, nUint24 = 0, nIdx = 0; nIdx < nLen; nIdx++) {
+        nMod3 = nIdx % 3;
+        //if (nIdx > 0 && (nIdx * 4 / 3) % 76 === 0) { sB64Enc += "\r\n"; }
+        nUint24 |= aBytes[nIdx] << (16 >>> nMod3 & 24);
+        if (nMod3 === 2 || aBytes.length - nIdx === 1) {
+            sB64Enc += String.fromCharCode(uint6ToB64(nUint24 >>> 18 & 63), uint6ToB64(nUint24 >>> 12 & 63), uint6ToB64(nUint24 >>> 6 & 63), uint6ToB64(nUint24 & 63));
+            nUint24 = 0;
+        }
     }
-  }
 
-  return sB64Enc.replace(/A(?=A$|$)/g, "=");
+    return sB64Enc.replace(/A(?=A$|$)/g, "=");
 
 }
 
@@ -101,6 +92,7 @@ var StaticByteBufferProto = new dcodeIO.ByteBuffer().__proto__;
 var StaticArrayBufferProto = new ArrayBuffer().__proto__;
 var StaticUint8ArrayProto = new Uint8Array().__proto__;
 var StaticWordArrayProto = CryptoJS.lib.WordArray.create('').__proto__;
+
 function getString(thing) {
     if (thing === Object(thing)) {
         if (thing.__proto__ == StaticUint8ArrayProto)
@@ -117,8 +109,8 @@ function getString(thing) {
 
 function getStringable(thing) {
     return (typeof thing == "string" || typeof thing == "number" || typeof thing == "boolean" ||
-            (thing === Object(thing) &&
-                (thing.__proto__ == StaticArrayBufferProto ||
+        (thing === Object(thing) &&
+            (thing.__proto__ == StaticArrayBufferProto ||
                 thing.__proto__ == StaticUint8ArrayProto ||
                 thing.__proto__ == StaticByteBufferProto ||
                 thing.__proto__ == StaticWordArrayProto)));
@@ -227,7 +219,7 @@ window.textsecure.storage = function() {
     }
 
     self.getEncrypted = function(key, defaultValue) {
-    //TODO
+        //TODO
         var value = localStorage.getItem("e" + key);
         if (value === null)
             return defaultValue;
@@ -269,7 +261,10 @@ window.textsecure.storage = function() {
             var map = textsecure.storage.getEncrypted("devices" + number);
 
             if (map === undefined)
-                map = { devices: [deviceObject], identityKey: deviceObject.identityKey };
+                map = {
+                    devices: [deviceObject],
+                    identityKey: deviceObject.identityKey
+                };
             else if (map.identityKey != getString(deviceObject.identityKey))
                 throw new Error("Identity key changed");
             else {
@@ -363,7 +358,9 @@ window.textsecure.storage = function() {
 
         var removeGroupFromNumber = function(groupId, number) {
             var membership = textsecure.storage.getEncrypted("groupMembership" + number, [groupId]);
-            membership = membership.filter(function(group) { return group != groupId; });
+            membership = membership.filter(function(group) {
+                return group != groupId;
+            });
             if (membership.length == 0)
                 textsecure.storage.removeEncrypted("groupMembership" + number);
             else
@@ -399,9 +396,14 @@ window.textsecure.storage = function() {
             if (!haveMe)
                 finalNumbers.push(me);
 
-            textsecure.storage.putEncrypted("group" + groupId, {numbers: finalNumbers});
+            textsecure.storage.putEncrypted("group" + groupId, {
+                numbers: finalNumbers
+            });
 
-            return {id: groupId, numbers: finalNumbers};
+            return {
+                id: groupId,
+                numbers: finalNumbers
+            };
         }
 
         self.getNumbers = function(groupId) {
@@ -463,7 +465,10 @@ window.textsecure.storage = function() {
             if (group === undefined)
                 return undefined;
 
-            return { id: groupId, numbers: group.numbers }; //TODO: avatar/name tracking
+            return {
+                id: groupId,
+                numbers: group.numbers
+            }; //TODO: avatar/name tracking
         }
 
         return self;
@@ -486,7 +491,7 @@ window.textsecure.nacl = function() {
         return new Promise(function(resolve, reject) {
             if (naclLoaded || !self.USE_NACL)
                 return resolve(func());
-            onLoadCallbacks[onLoadCallbacks.length] = [ func, resolve, reject ];
+            onLoadCallbacks[onLoadCallbacks.length] = [func, resolve, reject];
         });
     }
 
@@ -552,7 +557,10 @@ window.textsecure.replay = function() {
         var e = new Error(shortMsg);
         e.name = "ReplayableError";
         e.humanError = e.longMessage = longMsg;
-        e.replayData = { replayFunction: replayFunction, args: args };
+        e.replayData = {
+            replayFunction: replayFunction,
+            args: args
+        };
         e.replay = function() {
             self.replayError(e.replayData);
         }
@@ -572,11 +580,14 @@ window.textsecure.subscribeToPush = function(message_callback) {
             // After this point, a) decoding errors are not the server's fault, and
             // b) we should handle them gracefully and tell the user they received an invalid message
             console.log("Successfully decoded message with id: " + message.id);
-            socket.send(JSON.stringify({type: 1, id: message.id}));
+            socket.send(JSON.stringify({
+                type: 1,
+                id: message.id
+            }));
             return textsecure.crypto.handleIncomingPushMessageProto(proto).then(function(decrypted) {
                 // Delivery receipt
                 if (decrypted === null)
-                    //TODO: Pass to UI
+                //TODO: Pass to UI
                     return;
 
                 // Now that its decrypted, validate the message and clean it up for consumer processing
@@ -586,8 +597,7 @@ window.textsecure.subscribeToPush = function(message_callback) {
                 if (decrypted.flags == null)
                     decrypted.flags = 0;
 
-                if ((decrypted.flags & textsecure.protobuf.PushMessageContent.Flags.END_SESSION)
-                            == textsecure.protobuf.PushMessageContent.Flags.END_SESSION)
+                if ((decrypted.flags & textsecure.protobuf.PushMessageContent.Flags.END_SESSION) == textsecure.protobuf.PushMessageContent.Flags.END_SESSION)
                     return;
                 if (decrypted.flags != 0)
                     throw new Error("Unknown flags in message");
@@ -615,43 +625,49 @@ window.textsecure.subscribeToPush = function(message_callback) {
                         if (fromIndex < 0) //TODO: This could be indication of a race...
                             throw new Error("Sender was not a member of the group they were sending from");
 
-                        switch(decrypted.group.type) {
-                        case textsecure.protobuf.PushMessageContent.GroupContext.Type.UPDATE:
-                            if (decrypted.group.avatar !== null)
-                                promises.push(handleAttachment(decrypted.group.avatar));
+                        switch (decrypted.group.type) {
+                            case textsecure.protobuf.PushMessageContent.GroupContext.Type.UPDATE:
+                                if (decrypted.group.avatar !== null)
+                                    promises.push(handleAttachment(decrypted.group.avatar));
 
-                            if (existingGroup.filter(function(number) { decrypted.group.members.indexOf(number) < 0 }).length != 0)
-                                throw new Error("Attempted to remove numbers from group with an UPDATE");
-                            decrypted.group.added = decrypted.group.members.filter(function(number) { return existingGroup.indexOf(number) < 0; });
+                                if (existingGroup.filter(function(number) {
+                                        decrypted.group.members.indexOf(number) < 0
+                                    }).length != 0)
+                                    throw new Error("Attempted to remove numbers from group with an UPDATE");
+                                decrypted.group.added = decrypted.group.members.filter(function(number) {
+                                    return existingGroup.indexOf(number) < 0;
+                                });
 
-                            var newGroup = textsecure.storage.groups.addNumbers(decrypted.group.id, decrypted.group.added);
-                            if (newGroup.length != decrypted.group.members.length ||
-                                        newGroup.filter(function(number) { return decrypted.group.members.indexOf(number) < 0; }).length != 0)
-                                throw new Error("Error calculating group member difference");
+                                var newGroup = textsecure.storage.groups.addNumbers(decrypted.group.id, decrypted.group.added);
+                                if (newGroup.length != decrypted.group.members.length ||
+                                    newGroup.filter(function(number) {
+                                        return decrypted.group.members.indexOf(number) < 0;
+                                    }).length != 0)
+                                    throw new Error("Error calculating group member difference");
 
-                            //TODO: Also follow this path if avatar + name haven't changed (ie we should start storing those)
-                            if (decrypted.group.avatar === null && decrypted.group.added.length == 0 && decrypted.group.name === null)
-                                return;
+                                //TODO: Also follow this path if avatar + name haven't changed (ie we should start storing those)
+                                if (decrypted.group.avatar === null && decrypted.group.added.length == 0 && decrypted.group.name === null)
+                                    return;
 
-                            //TODO: Strictly verify all numbers (ie dont let verifyNumber do any user-magic tweaking)
+                                //TODO: Strictly verify all numbers (ie dont let verifyNumber do any user-magic tweaking)
 
-                            decrypted.body = null;
-                            decrypted.attachments = [];
+                                decrypted.body = null;
+                                decrypted.attachments = [];
 
-                            break;
-                        case textsecure.protobuf.PushMessageContent.GroupContext.Type.QUIT:
-                            textsecure.storage.groups.removeNumber(decrypted.group.id, proto.source);
+                                break;
+                            case textsecure.protobuf.PushMessageContent.GroupContext.Type.QUIT:
+                                textsecure.storage.groups.removeNumber(decrypted.group.id, proto.source);
 
-                            decrypted.body = null;
-                            decrypted.attachments = [];
-                        case textsecure.protobuf.PushMessageContent.GroupContext.Type.DELIVER:
-                            decrypted.group.name = null;
-                            decrypted.group.members = [];
-                            decrypted.group.avatar = null;
+                                decrypted.body = null;
+                                decrypted.attachments = [];
+                            case textsecure.protobuf.PushMessageContent.GroupContext.Type.DELIVER:
+                                decrypted.group.name = null;
+                                decrypted.group.members = [];
+                                decrypted.group.avatar = null;
 
-                            break;
-                        default:
-                            throw new Error("Unknown group message type");
+                                break;
+                            default:
+                                throw new Error("Unknown group message type");
                         }
                     }
                 }
@@ -659,7 +675,10 @@ window.textsecure.subscribeToPush = function(message_callback) {
                 for (var i in decrypted.attachments)
                     promises.push(handleAttachment(decrypted.attachments[i]));
                 return Promise.all(promises).then(function() {
-                    message_callback({pushMessage: proto, message: decrypted});
+                    message_callback({
+                        pushMessage: proto,
+                        message: decrypted
+                    });
                 });
             })
         }).catch(function(e) {

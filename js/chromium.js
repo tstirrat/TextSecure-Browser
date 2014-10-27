@@ -18,28 +18,32 @@ window.extension = window.extension || {};
 
 window.extension.navigator = function() {
     var self = {};
-    
+
     var tabs = {};
-    tabs.create = function(url){
-        chrome.tabs.create({url: url});
+    tabs.create = function(url) {
+        chrome.tabs.create({
+            url: url
+        });
     };
     self.tabs = tabs;
-    
-    self.setBadgeText = function(text){
-        chrome.browserAction.setBadgeText({text: text + ""});
+
+    self.setBadgeText = function(text) {
+        chrome.browserAction.setBadgeText({
+            text: text + ""
+        });
     };
-    
+
     return self;
 }();
 
 // Random shared utilities that are used only by chromium things
 
 function registrationDone() {
-	localStorage.setItem("chromiumRegistrationDone", "");
-	//TODO: Fix dirty hack:
-	chrome.runtime.reload();
+    localStorage.setItem("chromiumRegistrationDone", "");
+    //TODO: Fix dirty hack:
+    chrome.runtime.reload();
 }
 
 function isRegistrationDone() {
-	return localStorage.getItem("chromiumRegistrationDone") !== null;
+    return localStorage.getItem("chromiumRegistrationDone") !== null;
 }

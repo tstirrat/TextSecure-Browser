@@ -14,11 +14,12 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-;(function() {
+;
+(function() {
     function validateNumber() {
         try {
             var regionCode = $('#regionCode').val();
-            var number     = $('#number').val();
+            var number = $('#number').val();
 
             var parsedNumber = libphonenumber.util.verifyNumber(number, regionCode);
 
@@ -27,7 +28,7 @@
             $('#number-container').addClass('valid');
             $('#request-sms, #request-voice').removeAttr('disabled');
             return parsedNumber;
-        } catch(e) {
+        } catch (e) {
             $('#number-container').removeClass('valid');
             $('#request-sms, #request-voice').prop('disabled', 'disabled');
         }
@@ -47,16 +48,19 @@
     textsecure.registerOnLoadFunction(function() {
         $(function() {
             if (isRegistrationDone()) {
-                $('#complete-number').text(textsecure.utils.unencodeNumber(textsecure.storage.getUnencrypted("number_id"))[0]);//TODO: no
+                $('#complete-number').text(textsecure.utils.unencodeNumber(textsecure.storage.getUnencrypted("number_id"))[0]); //TODO: no
                 $('#setup-complete').show();
             } else {
                 $('#choose-setup').show();
                 $('#number').keyup(validateNumber);
                 $('#regionCode').change(validateNumber);
 
-                $.each(libphonenumber.util.getAllRegionCodes(), function (regionCode, countryName) {
+                $.each(libphonenumber.util.getAllRegionCodes(), function(regionCode, countryName) {
                     $('#regionCode').append(
-                        $('<option>', { value: regionCode, text: countryName })
+                        $('<option>', {
+                            value: regionCode,
+                            text: countryName
+                        })
                     );
                 });
 
@@ -87,7 +91,7 @@
                     }
                 });
 
-                $('#new-account').click(function(){
+                $('#new-account').click(function() {
                     $('#choose-setup').fadeOut(function() {
                         $('#single-device').fadeIn();
                     });
@@ -113,18 +117,18 @@
                             $('#verify').show();
 
                             textsecure.registerSingleDevice(number, verificationCode, function(step) {
-                                switch(step) {
-                                case 1:
-                                    $('#verify2done').text('done');
-                                    break;
-                                case 2:
-                                    $('#verify3done').text('done');
-                                    break;
-                                case 3:
-                                    $('#complete-number').text(number);
-                                    $('#verify').hide();
-                                    $('#setup-complete').show();
-                                    registrationDone();
+                                switch (step) {
+                                    case 1:
+                                        $('#verify2done').text('done');
+                                        break;
+                                    case 2:
+                                        $('#verify3done').text('done');
+                                        break;
+                                    case 3:
+                                        $('#complete-number').text(number);
+                                        $('#verify').hide();
+                                        $('#setup-complete').show();
+                                        registrationDone();
                                 }
                             }).catch(function(error) {
                                 //TODO: No alerts...
@@ -137,7 +141,7 @@
                     });
                 });
 
-                $('#new-device').click(function(){
+                $('#new-device').click(function() {
                     $('#choose-setup').fadeOut(function() {
                         $('#multi-device').fadeIn();
                     });
@@ -158,9 +162,9 @@
                         socket.onmessage = function(message) {
                             if (message.uuid) {
                                 qrCode.makeCode('textsecure-device-init:/' +
-                                                '?channel_uuid=' + message.uuid +
-                                                '&channel_server=' + textsecure.api.relay +
-                                                '&publicKey=' + btoa(getString(cryptoInfo.publicKey)));
+                                    '?channel_uuid=' + message.uuid +
+                                    '&channel_server=' + textsecure.api.relay +
+                                    '&publicKey=' + btoa(getString(cryptoInfo.publicKey)));
                                 $('img').removeAttr('style');
                                 $('#multi-device .status').text("Use your phone to scan the QR code.")
                             } else {
@@ -174,24 +178,24 @@
 
 
                                 textsecure.registerSecondDevice(cryptoInfo, message.message, function(step) {
-                                    switch(step) {
-                                    case 1:
-                                        $('#verify1done').text('done');
-                                        break;
-                                    case 2:
-                                        $('#verify2done').text('done');
-                                        break;
-                                    case 3:
-                                        $('#verify3done').text('done');
-                                        break;
-                                    case 4:
-                                        //TODO: User needs to verify number before we continue
-                                        $('#complete-number').text(parsedNumber);
-                                        $('#verify4done').text('done');
-                                    case 5:
-                                        $('#verify').hide();
-                                        $('#setup-complete').show();
-                                        registrationDone();
+                                    switch (step) {
+                                        case 1:
+                                            $('#verify1done').text('done');
+                                            break;
+                                        case 2:
+                                            $('#verify2done').text('done');
+                                            break;
+                                        case 3:
+                                            $('#verify3done').text('done');
+                                            break;
+                                        case 4:
+                                            //TODO: User needs to verify number before we continue
+                                            $('#complete-number').text(parsedNumber);
+                                            $('#verify4done').text('done');
+                                        case 5:
+                                            $('#verify').hide();
+                                            $('#setup-complete').show();
+                                            registrationDone();
                                     }
                                 });
                             }

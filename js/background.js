@@ -15,19 +15,19 @@
  */
 
 textsecure.registerOnLoadFunction(function() {
-	if (!localStorage.getItem('first_install_ran')) {
-		localStorage.setItem('first_install_ran', 1);
-		extension.navigator.tabs.create("options.html");
-	} else {
-		if (isRegistrationDone()) {
-			textsecure.subscribeToPush(function(message) {
-				Whisper.Messages.addIncomingMessage(message);
-				console.log("Got message from " + message.pushMessage.source + "." + message.pushMessage.sourceDevice +
-							': "' + getString(message.message.body) + '"');
-				var newUnreadCount = textsecure.storage.getUnencrypted("unreadCount", 0) + 1;
-				textsecure.storage.putUnencrypted("unreadCount", newUnreadCount);
-				extension.navigator.setBadgeText(newUnreadCount);
-			});
-		}
-	}
+    if (!localStorage.getItem('first_install_ran')) {
+        localStorage.setItem('first_install_ran', 1);
+        extension.navigator.tabs.create("options.html");
+    } else {
+        if (isRegistrationDone()) {
+            textsecure.subscribeToPush(function(message) {
+                Whisper.Messages.addIncomingMessage(message);
+                console.log("Got message from " + message.pushMessage.source + "." + message.pushMessage.sourceDevice +
+                    ': "' + getString(message.message.body) + '"');
+                var newUnreadCount = textsecure.storage.getUnencrypted("unreadCount", 0) + 1;
+                textsecure.storage.putUnencrypted("unreadCount", newUnreadCount);
+                extension.navigator.setBadgeText(newUnreadCount);
+            });
+        }
+    }
 });

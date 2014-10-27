@@ -15,67 +15,72 @@
 
 // All inputs/outputs are arraybuffers!
 window.textsecure.subtle = (function() {
-	var StaticArrayBufferProto = new ArrayBuffer().__proto__;
-	function assertIsArrayBuffer(thing) {
-		if (thing !== Object(thing) || thing.__proto__ != StaticArrayBufferProto)
-			throw new Error("Needed a ArrayBuffer");
-	}
+    var StaticArrayBufferProto = new ArrayBuffer().__proto__;
 
-	// private implementation functions
-	function HmacSHA256(key, input) {
-		assertIsArrayBuffer(key);
-		assertIsArrayBuffer(input);
-		return CryptoJS.HmacSHA256(
-				CryptoJS.lib.WordArray.create(input),
-				CryptoJS.enc.Latin1.parse(getString(key))
-			).toString(CryptoJS.enc.Latin1);
-	};
+    function assertIsArrayBuffer(thing) {
+        if (thing !== Object(thing) || thing.__proto__ != StaticArrayBufferProto)
+            throw new Error("Needed a ArrayBuffer");
+    }
 
-	function encryptAESCBC(plaintext, key, iv) {
-		assertIsArrayBuffer(plaintext);
-		assertIsArrayBuffer(key);
-		assertIsArrayBuffer(iv);
-		return CryptoJS.AES.encrypt(CryptoJS.enc.Latin1.parse(getString(plaintext)),
-				CryptoJS.enc.Latin1.parse(getString(key)),
-				{iv: CryptoJS.enc.Latin1.parse(getString(iv))})
-			.ciphertext.toString(CryptoJS.enc.Latin1);
-	};
+    // private implementation functions
+    function HmacSHA256(key, input) {
+        assertIsArrayBuffer(key);
+        assertIsArrayBuffer(input);
+        return CryptoJS.HmacSHA256(
+            CryptoJS.lib.WordArray.create(input),
+            CryptoJS.enc.Latin1.parse(getString(key))
+        ).toString(CryptoJS.enc.Latin1);
+    };
 
-	function decryptAESCBC(ciphertext, key, iv) {
-		assertIsArrayBuffer(ciphertext);
-		assertIsArrayBuffer(key);
-		assertIsArrayBuffer(iv);
-		return CryptoJS.AES.decrypt(btoa(getString(ciphertext)),
-				CryptoJS.enc.Latin1.parse(getString(key)),
-				{iv: CryptoJS.enc.Latin1.parse(getString(iv))})
-			.toString(CryptoJS.enc.Latin1);
-	};
+    function encryptAESCBC(plaintext, key, iv) {
+        assertIsArrayBuffer(plaintext);
+        assertIsArrayBuffer(key);
+        assertIsArrayBuffer(iv);
+        return CryptoJS.AES.encrypt(CryptoJS.enc.Latin1.parse(getString(plaintext)),
+                CryptoJS.enc.Latin1.parse(getString(key)), {
+                    iv: CryptoJS.enc.Latin1.parse(getString(iv))
+                })
+            .ciphertext.toString(CryptoJS.enc.Latin1);
+    };
 
-	// utility function for connecting front and back ends via promises
-	// Takes an implementation function and 0 or more arguments
-	function promise(implementation) {
-		var args = Array.prototype.slice.call(arguments);
-		args.shift();
-		return Promise.resolve(toArrayBuffer(implementation.apply(this, args)));
-	}
+    function decryptAESCBC(ciphertext, key, iv) {
+        assertIsArrayBuffer(ciphertext);
+        assertIsArrayBuffer(key);
+        assertIsArrayBuffer(iv);
+        return CryptoJS.AES.decrypt(btoa(getString(ciphertext)),
+                CryptoJS.enc.Latin1.parse(getString(key)), {
+                    iv: CryptoJS.enc.Latin1.parse(getString(iv))
+                })
+            .toString(CryptoJS.enc.Latin1);
+    };
 
-	// public interface functions
-	function encrypt(algorithm, key, data) {
-		if (algorithm.name === "AES-CBC")
-			return promise(encryptAESCBC, data, key, algorithm.iv);
-	};
-	function decrypt(algorithm, key, data) {
-		if (algorithm.name === "AES-CBC")
-			return promise(decryptAESCBC, data, key, algorithm.iv);
-	};
-	function sign(algorithm, key, data) {
-		if (algorithm.name === "HMAC" && algorithm.hash === "SHA-256")
-			return promise(HmacSHA256, key, data);
-	};
+    // utility function for connecting front and back ends via promises
+    // Takes an implementation function and 0 or more arguments
+    function promise(implementation) {
+        var args = Array.prototype.slice.call(arguments);
+        args.shift();
+        return Promise.resolve(toArrayBuffer(implementation.apply(this, args)));
+    }
 
-	return {
-		encrypt	 : encrypt,
-		decrypt	 : decrypt,
-		sign     : sign,
-	}
+    // public interface functions
+    function encrypt(algorithm, key, data) {
+        if (algorithm.name === "AES-CBC")
+            return promise(encryptAESCBC, data, key, algorithm.iv);
+    };
+
+    function decrypt(algorithm, key, data) {
+        if (algorithm.name === "AES-CBC")
+            return promise(decryptAESCBC, data, key, algorithm.iv);
+    };
+
+    function sign(algorithm, key, data) {
+        if (algorithm.name === "HMAC" && algorithm.hash === "SHA-256")
+            return promise(HmacSHA256, key, data);
+    };
+
+    return {
+        encrypt: encrypt,
+        decrypt: decrypt,
+        sign: sign,
+    }
 })();
