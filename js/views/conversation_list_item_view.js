@@ -14,12 +14,14 @@ var Whisper = Whisper || {};
       this.template = $('#contact').html();
       Mustache.parse(this.template);
 
-      this.listenTo(this.model, 'change', this.render); // auto update
-      this.listenTo(this.model, 'destroy', this.remove); // auto update
-      this.listenTo(this.model, 'render', this.open);
+      // this.listenTo(this.model, 'change', this.render); // auto update
+      // this.listenTo(this.model, 'destroy', this.remove); // auto update
+      // this.listenTo(this.model, 'render', this.open);
     },
 
     open: function(e) {
+      chrome.windows.create({ type: 'panel', url: 'conversation.html', width: 300 });
+      return false;
       $('.conversation').trigger('close'); // detach any existing conversation views
       if (!this.view) {
         this.view = new Whisper.ConversationView({ model: this.model });

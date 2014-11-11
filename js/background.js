@@ -38,4 +38,22 @@
 
     addRegistrationListener(init);
     init();
+
+    var mainPanelId = null;
+
+    window.chrome.windows.onRemoved.addListener(function (win) {
+        if (mainPanelId = win.id) {
+            mainPanelId = null;
+        }
+    });
+
+    window.chrome.browserAction.onClicked.addListener(function () {
+        if (mainPanelId) {
+            window.chrome.windows.update(mainPanelId, { focused: true });
+        } else {
+        window.chrome.windows.create({ type: 'panel', url: 'ecli/dist/index.html#/', width: 280, focused: true }, function (win) {
+            mainPanelId = win.id;
+        });
+        }
+    });
 })();

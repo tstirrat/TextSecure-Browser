@@ -4,9 +4,7 @@
         <meta charset='utf-8'>
         <meta content='width=device-width, user-scalable=no, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0' name='viewport'>
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <title>
-        Signal for Chrome
-        </title>
+        <title>Conversation</title>
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link href='/favicon.ico' rel='shortcut icon'>
@@ -16,22 +14,22 @@
         <link href="/stylesheets/index.css" rel="stylesheet" type="text/css" />
     </head>
     <body class='signal index' data-name="curve25519" data-tools="pnacl" data-configs="Debug Release" data-path="nacl/pnacl/{config}">
-        <div class='title-bar' id='header'>
-            <a href id='new-message'>New message</a>
-            <a href id='new-group'>New group</a>
+        <div id="disc">
+            
         </div>
-        <div class='notifications'>
-            <div class='notification info'>
+        <script type='text/x-tmpl-mustache' id='conversation'>
+            <div class='discussion-container'></div>
+            <div class='send-message-area'>
+                <div class='message-composer'>
+                    <form class='send'>
+                        <input class='send-message' rows='6' type='textarea'>
+                        <div class='attachments'>
+                          <input type='file' name='files[]' multiple class='file-input'>
+                        </div>
+                    </form>
+                </div>
             </div>
-        </div>
-        <div id='gutter' class='gutter'>
-            <div class='search'>
-                <form>
-                  <input name='contact_search' placeholder='Search' type='search'>
-                </form>
-            </div>
-            <div id='contacts'></div>
-        </div>
+        </script>
         <script type='text/x-tmpl-mustache' id='message'>
             <div class='sender'>{{ sender }}</div>
             <img class='avatar' src='{{ contact_avatar }}'>
@@ -103,23 +101,20 @@
             </div>
           </form>
         </script>
+        <script type="text/javascript" src="js-deps/nacl-common.js"></script>
+        <script type="text/javascript" src="js-deps/CryptoJS.js"></script>
+        <script type="text/javascript" src="js-deps/curve255.js"></script>
         <script type="text/javascript" src="js/components.js"></script>
-
         <script type="text/javascript" src="components/bootstrap-tagsinput/dist/bootstrap-tagsinput.js"></script>
 
         <script type="text/javascript" src="js/protobufs.js"></script>
-        <script type="text/javascript" src="js/curve25519_compiled.js"></script>
-        <script type="text/javascript" src="js/nativeclient.js"></script>
         <script type="text/javascript" src="js/helpers.js"></script>
         <script type="text/javascript" src="js/storage.js"></script>
         <script type="text/javascript" src="js/storage/devices.js"></script>
         <script type="text/javascript" src="js/storage/groups.js"></script>
         <script type="text/javascript" src="js/libphonenumber-util.js"></script>
-
         <script type="text/javascript" src="js/webcrypto.js"></script>
         <script type="text/javascript" src="js/crypto.js"></script>
-        <script type="text/javascript" src="js/protocol.js"></script>
-
         <script type="text/javascript" src="js/models/messages.js"></script>
         <script type="text/javascript" src="js/models/threads.js"></script>
         <script type="text/javascript" src="js/api.js"></script>
@@ -136,7 +131,7 @@
         <script type="text/javascript" src="js/views/conversation_view.js"></script>
         <script type="text/javascript" src="js/views/new_conversation_view.js"></script>
         <script type="text/javascript" src="js/views/new_group_view.js"></script>
-        <script type="text/javascript" src="js/index.js"></script>
+        <script type="text/javascript" src="js/conversation.js"></script>
         <div id="listener"></div>
         <div id="log"></div>
     </body>

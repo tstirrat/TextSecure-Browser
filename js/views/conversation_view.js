@@ -21,6 +21,7 @@ var Whisper = Whisper || {};
       window.addEventListener('storage', (function(){
         this.model.messages().fetch();
       }).bind(this));
+      document.title = this.model.id;
     },
     events: {
       'submit .send': 'sendMessage',
