@@ -1,7 +1,7 @@
 export default {
   name: 'textsecure',
   after: 'background',
-  initialize: function textsecureInitialize(container, app) {
+  initialize: function textsecureInitialize(container) {
     var textsecure = {};
 
     var bg = container.lookup('chrome:background-page');

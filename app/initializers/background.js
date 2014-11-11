@@ -1,6 +1,6 @@
 export default {
   name: 'background',
-  initialize: function backgroundInitialize(container, app) {
+  initialize: function backgroundInitialize(container) {
     var backgroundPage = {};
 
     if (window.chrome.extension) {
