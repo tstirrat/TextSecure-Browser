@@ -1,6 +1,6 @@
 export default {
   name: 'background',
-  initialize: function backgroundInitialize(app, container) {
+  initialize: function backgroundInitialize(container, app) {
     var backgroundPage = {};
 
     if (window.chrome.extension) {
@@ -8,7 +8,7 @@ export default {
     }
 
     container.register('chrome:background-page', backgroundPage, { singleton: true, instantiate: false });
-    container.inject('controller', 'background', 'chrome:background-page');
-    container.inject('route', 'background', 'chrome:background-page');
+    container.injection('controller', 'background', 'chrome:background-page');
+    container.injection('route', 'background', 'chrome:background-page');
   }
 };
