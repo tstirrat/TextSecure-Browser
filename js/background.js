@@ -34,6 +34,11 @@
                 });
             }
         }
+
+        // main icon opens default panel
+        window.chrome.browserAction.onClicked.addListener(function () {
+            window.extension.panels.create('main', { type: 'panel', url: 'dist/index.html#/', width: 280, focused: true });
+        });
     };
 
     addRegistrationListener(init);

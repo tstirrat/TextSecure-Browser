@@ -51,3 +51,41 @@ function addRegistrationListener(callback) {
         }
     });
 };
+
+window.extension.panels = (function () {
+    var self = {};
+
+    var panels = {
+        main: null
+        // thread-+123456789: 1234
+        // group-2: 1235
+    };
+
+    self.create =  function (windowName, options) {
+        var panelId = panels[windowName];
+
+        // if already created, focus the panel
+        if (panelId) {
+            window.chrome.windows.update(panelId, { focused: true });
+            return;
+        }
+
+        window.chrome.windows.create(options, function (win) {
+            panels[windowName] = win.id;
+        });
+    };
+
+    window.chrome.windows.onRemoved.addListener(function (windowId) {
+        var keys = Object.keys(panels).filter(function (k) {
+            return panels[k] === windowId;
+        });
+
+        if (keys.length) {
+            keys.forEach(function (windowName) {
+                panels[windowName] = null;
+            });
+        }
+    });
+
+    return self;
+}());
