@@ -1,0 +1,25 @@
+.thread-tile {
+  border-bottom: 1px solid lightgray;
+  padding: 5px;
+
+  height: 60px;
+  cursor: pointer;
+
+  &:last-child {
+    margin-bottom: 0;
+  }
+
+  .thread-tile-name {
+    margin-top: 0;
+  }
+
+  .thread-tile-body {
+    font-style: italic;
+  }
+
+  > .avatar-image {
+    float: left;
+    display: block;
+    margin-right: 8px;
+  }
+}

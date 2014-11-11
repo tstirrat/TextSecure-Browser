@@ -1,0 +1,19 @@
+.avatar-image {
+  display: inline-block;
+  overflow: hidden;
+  border-radius: 3px;
+
+  > a {
+    display: block;
+  }
+
+  &.size-xs {
+    width: 32px;
+    height: 32px;
+  }
+
+  &.size-lg {
+    width: 48px;
+    height: 48px;
+  }
+}

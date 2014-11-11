@@ -1,3 +1,19 @@
 node_modules
 .sass-cache
 build/curve25519_compiled.js
+
+# ember-cli
+/dist
+/tmp
+
+# dependencies
+/node_modules
+/components
+
+# misc
+/.sass-cache
+/connect.lock
+/coverage/*
+/libpeerconnection.log
+npm-debug.log
+testem.log

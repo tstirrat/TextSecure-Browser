@@ -1,0 +1,19 @@
+.activity {
+
+  .activity-header {
+    background-color: #eee;
+    border-bottom: 1px solid lightgray;
+  }
+
+  .activity-content {
+    overflow-y: scroll;
+  }
+
+  .activity-footer {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    border-top: 1px solid lightgray;
+  }
+}

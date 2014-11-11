@@ -1,0 +1,29 @@
+.single-message {
+  margin: 10px 0;
+
+
+  &:last-child {
+    margin-bottom: 0;
+  }
+
+  &.outgoing {
+    text-align: right;
+  }
+
+  > .single-message-body {
+    vertical-align: top;
+  }
+
+  > .avatar-image {
+    float: left;
+    display: block;
+    margin-right: 8px;
+  }
+
+  &.outgoing > .avatar-image {
+    float: right;
+    display: block;
+    margin-right: 0;
+    margin-left: 8px;
+  }
+}

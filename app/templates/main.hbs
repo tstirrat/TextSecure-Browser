@@ -1,0 +1,18 @@
+<div class="activity activity-main">
+  <div class="activity-header">
+    <form class="form">
+      <div class="form-group">
+        <label class="control-label sr-only">Search</label>
+        <input type="search" class="form-control" placeholder="Find Contact">
+      </div>
+    </form>
+  </div>
+
+
+  <div class="activity-content list-group">
+    {{#each model}}
+      {{thread-tile thread=this action="goToThread"}}
+    {{/each}}
+  </div>
+
+</div>

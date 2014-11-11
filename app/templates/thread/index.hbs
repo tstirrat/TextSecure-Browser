@@ -1,0 +1,17 @@
+<ul class="activity-content list-unstyled messages">
+{{#each model}}
+  <li class="message-container">
+    {{#single-message contact=author type=type colors=colors}}
+      {{body}}
+    {{/single-message}}
+  </li>
+{{/each}}
+</ul>
+
+<form class="activity-footer send-message" {{action 'sendMessage' on="submit"}}>
+  <button type="button" class="btn btn-default btn-attach pull-left"><i class="glyphicon glyphicon-paperclip"></i></button>
+  <button class="btn btn-default btn-send pull-right"><i class="glyphicon glyphicon-send"></i></button>
+  <div class="message">
+    {{input placeholder="Message" value=message}}
+  </div>
+</form>

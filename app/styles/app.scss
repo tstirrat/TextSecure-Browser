@@ -1,0 +1,65 @@
+
+html, body {
+  overflow: hidden; /* prevent scrollback */
+}
+
+#listener {
+  display: none;
+}
+
+textarea {
+  resize: none;
+}
+
+@import "components/avatar-image";
+@import "components/single-message";
+@import "components/thread-tile";
+@import "components/activity";
+
+
+/* ---------- Main ----------- */
+
+.activity-main {
+}
+
+/* --------- Thread ---------- */
+
+.activity-thread {
+
+  .messages {
+    padding: 0 10px;
+    height: 319px; /* resized in views/chat/index.js */
+  }
+
+  .send-message {
+
+    .btn {
+      display: block;
+      border-radius: 0;
+      margin: 0;
+      border: 0 none;
+    }
+
+    .message {
+      border-color: lightgray;
+      border-style: solid;
+      border-width: 0 1px 0 1px;
+      overflow: hidden;
+      width: auto;
+      background-color: lightblue;
+
+      input {
+        width: 100%;
+        display: block;
+        padding: 5px 6px;
+        border: 0 none;
+        margin: 0;
+
+        &:focus {
+          outline: 0;
+        }
+      }
+    }
+  } // .send-message
+}
+
