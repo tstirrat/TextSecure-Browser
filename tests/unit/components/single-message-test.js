@@ -42,7 +42,5 @@ test('it has .outgoing when type == outgoing', function() {
   Ember.run(component, 'set', 'type', 'outgoing');
   this.append();
 
-  var ele = find('.single-message');
-
-  ok(ele);
+  ok(find('.outgoing'));
 });

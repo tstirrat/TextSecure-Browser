@@ -5,7 +5,7 @@ import {
 
 moduleForComponent('thread-tile', 'ThreadTileComponent', {
   // specify the other units that are required for this test
-  // needs: ['component:foo', 'helper:bar']
+  needs: ['component:avatar-image']
 });
 
 test('it renders', function() {

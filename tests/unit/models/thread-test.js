@@ -3,9 +3,9 @@ import {
   test
 } from 'ember-qunit';
 
-moduleForModel('chat', 'Chat', {
+moduleForModel('thread', 'Thread', {
   // Specify the other units that are required for this test.
-  needs: []
+  needs: ['model:contact', 'model:message', 'model:group']
 });
 
 test('it exists', function() {

@@ -5,7 +5,7 @@ import {
 
 moduleForModel('contact', 'Contact', {
   // Specify the other units that are required for this test.
-  needs: []
+  needs: ['model:group']
 });
 
 test('it exists', function() {
