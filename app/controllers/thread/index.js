@@ -24,7 +24,11 @@ export default Ember.ArrayController.extend({
 
       message.save().then(function (msg) {
         this.get('model').pushObject(msg);
-      }.bind(this));
+        return this.get('textsecure').messaging.sendMessageToNumber(thread.get('id'), this.get('message'));
+      }.bind(this))
+        .then(function () {
+          message.set('sendState', 'sent');
+        });
     }
   }
 });

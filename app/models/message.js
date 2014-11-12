@@ -8,6 +8,8 @@ export default DS.Model.extend({
   attachments: DS.attr(),
   timestamp: DS.attr('timestamp'),
 
+  sendState: DS.attr('string', { defaultValue: 'sending' }),
+
   author: DS.belongsTo('contact')
 });
 
